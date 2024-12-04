@@ -1,6 +1,9 @@
 import { MdPostAdd } from "react-icons/md";
+import { useDispatch } from "react-redux";
+import { modalFunc } from "../../redux/modalSlice";
 
 const Header = () => {
+  const dispatch = useDispatch();
   return (
     <div className="flex justify-between items-center bg-emerald-600  px-3 py-5">
       <div className="text-2xl md:text-3xl lg:text-4xl text-white">
@@ -23,7 +26,10 @@ const Header = () => {
           placeholder="arama yapınız."
         />
 
-        <div className="bg-emerald-400 bg-opacity-75 rounded-full p-2 flex items-center cursor-pointer justify-center hover:bg-emerald-300 transition hover:scale-105 hover:bg-opacity-100 ">
+        <div
+          onClick={() => dispatch(modalFunc())}
+          className="bg-emerald-400 bg-opacity-75 rounded-full p-2 flex items-center cursor-pointer justify-center hover:bg-emerald-300 transition hover:scale-105 hover:bg-opacity-100 "
+        >
           <MdPostAdd size={28} className="text-emerald-900" />
         </div>
       </div>
