@@ -11,7 +11,7 @@ const Header = () => {
   const dispatch = useDispatch();
 
   const modalButton = () => {
-    dispatch(cleanDataFunc());
+    //dispatch(cleanDataFunc());
     dispatch(modalFunc());
   };
   return (

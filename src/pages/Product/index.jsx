@@ -38,10 +38,8 @@ const Product = () => {
     if (loc) {
       const foundProduct = data.find((dt) => dt.id == loc);
       setProductInfo(foundProduct || { name: "", price: "", url: "" });
-    } else {
-      setProductInfo({ name: "", price: "", url: "" });
     }
-  }, [loc, data]);
+  }, [loc]);
 
   const buttonFunc = () => {
     dispatch(createDataFunc({ ...productInfo, id: data?.length + 1 }));
