@@ -14,6 +14,7 @@ export const modalSlice = createSlice({
         modalFunc: (state) => {
             state.modal = !state.modal
 
+
         }
 
 

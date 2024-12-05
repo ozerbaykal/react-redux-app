@@ -1,11 +1,21 @@
 import { useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { useDispatch } from "react-redux";
-import { deleteDataFunc } from "../../redux/dataSlice";
+import { deleteDataFunc, updateDataFunc } from "../../redux/dataSlice";
+import { modalFunc } from "../../redux/modalSlice";
+import { useNavigate } from "react-router-dom";
 
 const ProductCard = ({ item }) => {
   const [openEdit, setOpenEdit] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const updateFunc = () => {
+    dispatch(modalFunc());
+    setOpenEdit(false);
+    navigate(`/?update=${item.id}`);
+  };
+
   return (
     <div className="w-[250px] h-[250px] relative m-2 ">
       <img src={item?.url} className="w-full h-full bg-indigo-300 rounded-md" />
@@ -28,7 +38,7 @@ const ProductCard = ({ item }) => {
             Sil
           </div>
           <div
-            onClick={() => dispatch(updateDataFunc(item))}
+            onClick={updateFunc}
             className="cursor-pointer hover:bg-emerald-300 px-2 rounded-md hover:text-emerald-900 transition"
           >
             Güncelle

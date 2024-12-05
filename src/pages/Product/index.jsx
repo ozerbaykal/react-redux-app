@@ -3,14 +3,18 @@ import ProductCard from "../../componnets/ProductCard";
 import Modal from "../../componnets/Modal";
 import Input from "../../componnets/Input";
 import Button from "../../componnets/Button";
-import { useState } from "react";
-import { createDataFunc } from "../../redux/dataSlice";
+import { useEffect, useState } from "react";
+import { createDataFunc, updateDataFunc } from "../../redux/dataSlice";
 import { modalFunc } from "../../redux/modalSlice";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Product = () => {
   const { modal } = useSelector((state) => state.modal);
-  const { data } = useSelector((state) => state.data);
+  const { data, keyword } = useSelector((state) => state.data);
   const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const [productInfo, setProductInfo] = useState({
     name: "",
     price: "",
@@ -27,15 +31,32 @@ const Product = () => {
       setProductInfo((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     }
   };
+  //search parametresini aldık loc değişkenine atatık
+  let loc = location?.search.split("=")[1];
+
+  useEffect(() => {
+    if (loc) {
+      const foundProduct = data.find((dt) => dt.id == loc);
+      setProductInfo(foundProduct || { name: "", price: "", url: "" });
+    } else {
+      setProductInfo({ name: "", price: "", url: "" });
+    }
+  }, [loc, data]);
 
   const buttonFunc = () => {
     dispatch(createDataFunc({ ...productInfo, id: data?.length + 1 }));
     dispatch(modalFunc());
   };
+  const buttonUpdateFunc = () => {
+    dispatch(updateDataFunc({ ...productInfo, id: loc }));
+    dispatch(modalFunc());
+    navigate("/");
+  };
 
   const contentModal = (
     <>
       <Input
+        value={productInfo.name || ""}
         type={"text"}
         placeholder={"Ürün Ekle"}
         name={"name"}
@@ -43,6 +64,7 @@ const Product = () => {
         onChange={(e) => onChangeFunc(e, "name")}
       />
       <Input
+        value={productInfo.price || ""}
         type={"text"}
         placeholder={"Fiyat Ekle"}
         name={"price"}
@@ -56,18 +78,29 @@ const Product = () => {
         id={"url"}
         onChange={(e) => onChangeFunc(e, "url")}
       />
-      <Button btnText={"Ürün Oluştur"} onClick={buttonFunc} />
+      <Button
+        btnText={loc ? "Ürün Güncelle" : "Ürün Oluştur"}
+        onClick={loc ? buttonUpdateFunc : buttonFunc}
+      />
     </>
+  );
+  const filtredItems = data.filter((dt) =>
+    dt.name.toLowerCase().includes(keyword)
   );
 
   return (
     <div>
       <div className="flex items-center flex-wrap">
-        {data?.map((item, key) => (
+        {filtredItems?.map((item, key) => (
           <ProductCard key={key} item={item} />
         ))}
       </div>
-      {modal && <Modal title={"Ürün Oluştur"} content={contentModal} />}
+      {modal && (
+        <Modal
+          title={loc ? "Ürün Güncelle" : "Ürün Oluştur"}
+          content={contentModal}
+        />
+      )}
     </div>
   );
 };
